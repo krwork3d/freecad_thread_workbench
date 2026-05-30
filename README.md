@@ -83,8 +83,6 @@ GPL-3.0-or-later (see [LICENSE](LICENSE)).
 ---
 
 ## Скриншоты / Screenshots
-
+![Work Example](screens/thread_example.gif)
 ![Screenshot 1](screens/1.jpg)
 ![Screenshot 2](screens/2.jpg)
-![Screenshot 3](screens/3.jpg)
-![Screenshot 4](screens/4.jpg)
