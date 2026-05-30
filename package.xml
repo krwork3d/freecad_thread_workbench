@@ -2,11 +2,10 @@
 <package format="1" xmlns="https://wiki.freecad.org/Package_Metadata">
   <name>Thread Workbench</name>
   <description>
-    Генератор метрических резьб (ISO 724, крупный шаг) для PartDesign::Body.
-    Поддерживает внешнюю и внутреннюю резьбу через SubtractiveHelix.
+    Thread Workbench is a FreeCAD workbench for generating metric and inch threads
   </description>
-  <version>1.0.0</version>
-  <date>2025-05-29</date>
+  <version>0.1.0</version>
+  <date>2025-05-28</date>
   <maintainer email="">ThreadWorkbench</maintainer>
   <license file="LICENSE">GPL-3.0-or-later</license>
   <icon>freecad/threadworkbench/icons/ThreadWorkbench.svg</icon>
