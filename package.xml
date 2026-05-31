@@ -4,15 +4,18 @@
   <description>
     Thread Workbench is a FreeCAD workbench for generating metric and inch threads
   </description>
-  <version>0.1.1</version>
-  <date>2025-05-28</date>
+  <version>0.1.2</version>
+  <date>2025-05-31</date>
   <maintainer email="admin@цех3д.рф">ThreadWorkbench</maintainer>
   <license file="LICENSE">GPL-3.0-or-later</license>
-  <icon>freecad/freecad_thread_workbench/icons/ThreadWorkbench.svg</icon>
+  <icon>icons/ThreadWorkbench.svg</icon>
+  <url type="repository" branch="master">https://github.com/krwork3d/freecad_thread_workbench</url>
+  <url type="readme">https://github.com/krwork3d/freecad_thread_workbench/blob/master/README.md</url>
 
   <content>
     <workbench>
       <classname>ThreadWorkbench</classname>
+      <icon>icons/ThreadWorkbench.svg</icon>
       <subdirectory>./</subdirectory>
       <freecadmin>1.1.0</freecadmin>
       <tag>thread</tag>
