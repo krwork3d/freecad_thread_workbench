@@ -57,7 +57,7 @@ This workbench automates the process: just select a cylindrical face, set the th
 - **Edge offset** — set a distance from the face edge where the thread starts.
 - **Left-handed & reversed** — support for left-hand threads and reverse build direction.
 - **Smooth runout** — option to add an additive revolution at the far end of the thread for smooth groove closure, Fusion 360 style.
-- **Thread profiles** — support for multiple profiles (ISO 68/1 and others via the profile registry).
+- **Thread profiles** — support for multiple thread profiles (ISO 68/1 and others via the profile registry).
 - **Live preview** — preview the result before committing the operation.
 - **Multilingual** — UI is translatable via the standard FreeCAD translation system.
 

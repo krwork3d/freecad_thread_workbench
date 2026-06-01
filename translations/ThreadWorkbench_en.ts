@@ -89,6 +89,16 @@
         <source>NoEdge</source>
         <translation>— select a face first —</translation>
     </message>
+    <message>
+        <source>ClearanceLabel</source>
+        <translation>Clearance (mm):</translation>
+    </message>
+    <message>
+        <source>ClearanceTip</source>
+        <translation>Radial overlap of the cutting profile with the stock surface.
+Increase to cut deeper when stock is oversized (shaft &gt; D)
+or undersized (bore &lt; D). Default: 0.05 mm.</translation>
+    </message>
 
     <!-- UI: direction group -->
     <message>
@@ -104,18 +114,39 @@
         <translation>Left-handed thread</translation>
     </message>
 
-    <!-- UI: chamfer group -->
+    <!-- UI: runout combobox -->
     <message>
-        <source>ChamferGroup</source>
-        <translation>Chamfer (on round edges before thread)</translation>
+        <source>RunoutLabel</source>
+        <translation>Runout:</translation>
     </message>
     <message>
-        <source>AddChamfer</source>
-        <translation>Add chamfer</translation>
+        <source>RunoutNone</source>
+        <translation>None</translation>
     </message>
     <message>
-        <source>ChamferSize</source>
-        <translation>Size (mm):</translation>
+        <source>RunoutPocket</source>
+        <translation>Fill (additive)</translation>
+    </message>
+    <message>
+        <source>RunoutTapered</source>
+        <translation>Tapered (smooth fade)</translation>
+    </message>
+    <message>
+        <source>RunoutUndercut</source>
+        <translation>Undercut (relief groove)</translation>
+    </message>
+    <message>
+        <source>RunoutUndercutNarrow</source>
+        <translation>Undercut narrow (form B)</translation>
+    </message>
+    <message>
+        <source>RunoutTip</source>
+        <translation>How the thread groove ends:
+- None: abrupt stop (milling, tap/die)
+- Pocket: additive fill (external)
+- Tapered: smooth fade over half a turn (external, real screw runout)
+- Undercut: relief groove 3·P (internal, DIN 76-2 form A)
+- Undercut narrow: relief groove 2·P (internal, DIN 76-2 form B)</translation>
     </message>
 
     <!-- UI: misc -->
@@ -137,11 +168,11 @@
     </message>
     <message>
         <source>EdgeToEdge</source>
-        <translation>Edge to edge (full face)</translation>
+        <translation>Edge-to-edge (entire face)</translation>
     </message>
     <message>
         <source>CreateButton</source>
-        <translation>Create thread</translation>
+        <translation>Create Thread</translation>
     </message>
     <message>
         <source>StatusDefault</source>
@@ -150,7 +181,7 @@
 
     <!-- UI: live preview -->
     <message>
-        <source>Live preview</source>
+        <source>LivePreview</source>
         <translation>Live preview</translation>
     </message>
 
@@ -187,15 +218,15 @@
     </message>
     <message>
         <source>err_no_start_edge</source>
-        <translation>Select a start edge!</translation>
+        <translation>Choose a start edge!</translation>
     </message>
     <message>
         <source>err_edge_not_found</source>
-        <translation>Selected edge not found!</translation>
+        <translation>Chosen edge not found!</translation>
     </message>
     <message>
         <source>TransactionName</source>
-        <translation>Create thread</translation>
+        <translation>Create Thread</translation>
     </message>
     <message>
         <source>done</source>
@@ -209,23 +240,23 @@
     </message>
     <message>
         <source>err_no_subelement</source>
-        <translation>Could not determine the selected element.</translation>
+        <translation>Could not determine selected sub-element.</translation>
     </message>
     <message>
         <source>err_cannot_read_face</source>
-        <translation>Could not read the face.</translation>
+        <translation>Cannot read face.</translation>
     </message>
     <message>
         <source>err_not_cylindrical</source>
-        <translation>The selected face is not cylindrical.</translation>
+        <translation>Selected face is not cylindrical.</translation>
     </message>
     <message>
         <source>err_not_in_body</source>
-        <translation>The object is not inside a PartDesign::Body.</translation>
+        <translation>Object is not inside a PartDesign::Body.</translation>
     </message>
     <message>
         <source>err_not_enough_edges</source>
-        <translation>Not enough edges for auto-length. Set the thread length manually.</translation>
+        <translation>Not enough edges for auto-length. Specify thread length manually.</translation>
     </message>
     <message>
         <source>err_helix_failed</source>
@@ -235,11 +266,13 @@
         <source>err_unknown_profile</source>
         <translation>Unknown thread profile: {pid}</translation>
     </message>
-
-    <!-- InitGui log message -->
     <message>
-        <source>Loading Thread module... done</source>
-        <translation>Loading Thread module... done</translation>
+        <source>err_runout_failed</source>
+        <translation>Failed to create tapered runout: {e}</translation>
+    </message>
+    <message>
+        <source>err_undercut_failed</source>
+        <translation>Failed to create undercut runout: {e}</translation>
     </message>
 
 </context>

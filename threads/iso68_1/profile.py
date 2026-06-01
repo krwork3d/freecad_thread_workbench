@@ -6,7 +6,7 @@ Truncated trapezoid with a flat root (root flat = P/4).
 Used for ISO 261/262/724 metric threads.
 """
 
-from profiles.base import AbstractThreadProfile, _register
+from threads.base import AbstractThreadProfile, _register
 
 
 @_register

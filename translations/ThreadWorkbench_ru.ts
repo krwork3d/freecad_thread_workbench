@@ -89,6 +89,16 @@
         <source>NoEdge</source>
         <translation>— сначала выделите грань —</translation>
     </message>
+    <message>
+        <source>ClearanceLabel</source>
+        <translation>Зазор (мм):</translation>
+    </message>
+    <message>
+        <source>ClearanceTip</source>
+        <translation>Радиальный перехлёст режущего профиля с поверхностью заготовки.
+Увеличьте для более глубокой резки при завышенном диаметре заготовки (вал &gt; D)
+или заниженном (отверстие &lt; D). По умолчанию: 0.05 мм.</translation>
+    </message>
 
     <!-- UI: direction group -->
     <message>
@@ -104,18 +114,39 @@
         <translation>Левая резьба (LeftHanded)</translation>
     </message>
 
-    <!-- UI: chamfer group -->
+    <!-- UI: runout combobox -->
     <message>
-        <source>ChamferGroup</source>
-        <translation>Фаска (на круглые рёбра перед резьбой)</translation>
+        <source>RunoutLabel</source>
+        <translation>Выход резьбы:</translation>
     </message>
     <message>
-        <source>AddChamfer</source>
-        <translation>Добавить фаску</translation>
+        <source>RunoutNone</source>
+        <translation>Без выхода</translation>
     </message>
     <message>
-        <source>ChamferSize</source>
-        <translation>Размер (мм):</translation>
+        <source>RunoutPocket</source>
+        <translation>Заполнение (аддитивное)</translation>
+    </message>
+    <message>
+        <source>RunoutTapered</source>
+        <translation>Конический сход (плавное затухание)</translation>
+    </message>
+    <message>
+        <source>RunoutUndercut</source>
+        <translation>Канавка (проточка)</translation>
+    </message>
+    <message>
+        <source>RunoutUndercutNarrow</source>
+        <translation>Канавка узкая (форма B)</translation>
+    </message>
+    <message>
+        <source>RunoutTip</source>
+        <translation>Способ завершения резьбовой канавки:
+- Без выхода: резкое окончание (фрезеровка, метчик/плашка)
+- Заполнение: аддитивное заполнение (внешняя)
+- Конический сход: плавное затухание за пол-оборота (внешняя, реальный сход)
+- Канавка: проточка 3·P (внутренняя, DIN 76-2 форма A)
+- Канавка узкая: проточка 2·P (внутренняя, DIN 76-2 форма B)</translation>
     </message>
 
     <!-- UI: misc -->
@@ -150,7 +181,7 @@
 
     <!-- UI: live preview -->
     <message>
-        <source>Live preview</source>
+        <source>LivePreview</source>
         <translation>Живой предпросмотр</translation>
     </message>
 
@@ -235,11 +266,13 @@
         <source>err_unknown_profile</source>
         <translation>Неизвестный профиль резьбы: {pid}</translation>
     </message>
-
-    <!-- InitGui log message -->
     <message>
-        <source>Loading Thread module... done</source>
-        <translation>Загрузка модуля Thread... готово</translation>
+        <source>err_runout_failed</source>
+        <translation>Не удалось создать конический сход: {e}</translation>
+    </message>
+    <message>
+        <source>err_undercut_failed</source>
+        <translation>Не удалось создать канавку: {e}</translation>
     </message>
 
 </context>
