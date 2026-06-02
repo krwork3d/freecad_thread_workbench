@@ -47,7 +47,7 @@
     <!-- UI: parameter group -->
     <message>
         <source>ParamGroup</source>
-        <translation>Thread parameters</translation>
+        <translation>Thread Parameters</translation>
     </message>
     <message>
         <source>InchDiaLabel</source>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>PitchMmLabel</source>
-        <translation>Pitch (mm, calculated):</translation>
+        <translation>Pitch (mm, computed):</translation>
     </message>
     <message>
         <source>Custom</source>
@@ -196,7 +196,7 @@ or undersized (bore &lt; D). Default: 0.05 mm.</translation>
     </message>
     <message>
         <source>status_no_edges</source>
-        <translation>✓ Face: R={radius:.2f} mm. No round edges found.</translation>
+        <translation>✓ Face: R={radius:.2f} mm. No circular edges found.</translation>
     </message>
     <message>
         <source>no_edges</source>
