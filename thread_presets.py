@@ -1,27 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Thread presets for various standards.
+"""Thread presets — stable facade for the UI.
 
-Single access point to preset tables via PresetRegistry.
+All preset data is owned by the :mod:`threads` package:
+  - dimension tables live in ``threads/<standard>/presets.json`` (data only)
+  - search/suggest behaviour lives in ``threads/<standard>/presets.py``
+  - new standards are auto-discovered by ``threads/__init__.py``
 
-All data is stored in profiles/presets/*.py.
-Each thread type is a separate file with a class inheriting AbstractPresetTable,
-registered via the @register_preset_table decorator.
+The UI imports the helpers below and never touches the registry directly,
+so adding presets or new standards never requires UI changes.
 
-Adding a new thread type:
-    1. Create profiles/presets/my_standard.py
-    2. Define a class MyPresets(AbstractPresetTable)
-    3. Import the module in profiles/presets/__init__.py
-    4. Done — presets automatically appear in the registry
+Adding a preset:    edit ``threads/<standard>/presets.json``.
+Adding a standard:  drop ``threads/<standard>/`` with profile.py +
+                    presets.json (+ optional presets.py).
 """
 
-from profiles.presets import PresetRegistry, AbstractPresetTable
-from profiles.presets.registry import GLOBAL_REGISTRY
+from threads.registry import GLOBAL_REGISTRY
 
 # ═══════════════════════════════════════════════════════════════════
 # Public API
 # ═══════════════════════════════════════════════════════════════════
 
-# Global registry (already populated when profiles.presets is imported)
+# Global registry (already populated when threads.presets is imported)
 registry = GLOBAL_REGISTRY
 
 # Thread working depth: 5/8 × H = 5√3/16 × P ≈ 0.541266 × P
