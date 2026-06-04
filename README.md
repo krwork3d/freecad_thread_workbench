@@ -21,20 +21,22 @@
 - **Мультиязычность** — интерфейс переводится через стандартную систему переводов.
 
 ### ⚠️ Важно
-Проект находится на **ранней стадии разработки**. Возможны баги, вылеты и изменения в API/интерфейсе. Перед использованием в важных проектах рекомендуется сохранять резервные копии документов.
+Проект находится на **ранней стадии разработки**. Возможны баги, вылеты и изменения в API/интерфейсе. Перед использованием в важных проектах рекомендуется сохранять резервные копии документов. Минимальная версия FreeCAD с которой проверялась работа - 1.1.0.
+Нет гарантий, что этот верстак будет работать в версиях ниже.
 
 ### Установка
 1. Скопируйте содержимое репозитория в папку модулей FreeCAD:
-   - **Windows**: `%APPDATA%\FreeCAD\Mod\ThreadWorkbench\`
-   - **Linux/macOS**: `~/.FreeCAD/Mod/ThreadWorkbench/`
+   - **Windows**: `%APPDATA%\FreeCAD\v1-1\Mod\ThreadWorkbench\`
+   - **Linux/macOS**: `~/.FreeCAD/v1-1/Mod/ThreadWorkbench/`
 2. Перезапустите FreeCAD.
 3. Верстак появится в списке доступных workbenches под именем **Thread**.
 
 ### Использование
+Перед созданием резьбы вы можете создать фаску для удобства.
 1. Переключитесь на верстак **Thread**.
 2. Выделите цилиндрическую грань объекта, находящегося внутри `PartDesign::Body`.
-3. Укажите диаметр, шаг, длину и тип резьбы (наружная / внутренняя).
-4. Нажмите **Create Thread**.
+3. Укажите диаметр, шаг, длину и тип резьбы (наружная / внутренняя). Если есть фаска - можете указать отрицательное значение сдвига начала
+4. Нажмите **Создать резьбу**.
 
 ### Лицензия
 GPL-3.0-or-later (см. файл [LICENSE](LICENSE)).
@@ -62,19 +64,20 @@ This workbench automates the process: just select a cylindrical face, set the th
 - **Multilingual** — UI is translatable via the standard FreeCAD translation system.
 
 ### ⚠️ Important
-This project is in **early development**. Bugs, crashes, and API/UI changes are possible. Please save backup copies of your documents before using it on critical projects.
+This project is in **early development**. Bugs, crashes, and API/UI changes are possible. Please save backup copies of your documents before using it on critical projects. Minimum FreeCAD version tested is 1.1.0. There are no guarantees this workbench will work on versions below.
 
 ### Installation
 1. Copy the repository contents into your FreeCAD Mod directory:
-   - **Windows**: `%APPDATA%\FreeCAD\Mod\ThreadWorkbench\`
-   - **Linux/macOS**: `~/.FreeCAD/Mod\ThreadWorkbench/`
+   - **Windows**: `%APPDATA%\FreeCAD\v1-1\Mod\ThreadWorkbench\`
+   - **Linux/macOS**: `~/.FreeCAD/v1-1/Mod/ThreadWorkbench/`
 2. Restart FreeCAD.
 3. The workbench will appear in the available workbenches list as **Thread**.
 
 ### Usage
+Before creating a thread, you can create a chamfer for convenience.
 1. Switch to the **Thread** workbench.
 2. Select a cylindrical face of an object inside a `PartDesign::Body`.
-3. Set diameter, pitch, length, and thread type (external / internal).
+3. Set diameter, pitch, length, and thread type (external / internal). If a chamfer is present, you can specify a negative start offset.
 4. Press **Create Thread**.
 
 ### License
