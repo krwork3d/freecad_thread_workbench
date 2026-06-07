@@ -19,13 +19,13 @@
 
 """UI package for Thread Workbench task panel."""
 
-from ui.thread_ui import setup_ui
-from ui.preview import PreviewMixin
-from ui.scanning import ScanningMixin
-from ui.creation import CreationMixin
-from ui.presets import PresetsMixin
-from ui.runout import RunoutMixin
-from ui.selection import SelectionMixin
+from freecad.ThreadWorkbench.ui.thread_ui import setup_ui
+from freecad.ThreadWorkbench.ui.preview import PreviewMixin
+from freecad.ThreadWorkbench.ui.scanning import ScanningMixin
+from freecad.ThreadWorkbench.ui.creation import CreationMixin
+from freecad.ThreadWorkbench.ui.presets import PresetsMixin
+from freecad.ThreadWorkbench.ui.runout import RunoutMixin
+from freecad.ThreadWorkbench.ui.selection import SelectionMixin
 
 __all__ = [
     "setup_ui",

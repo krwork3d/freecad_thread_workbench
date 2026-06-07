@@ -23,12 +23,14 @@ import os
 import FreeCAD as App
 import FreeCADGui as Gui
 
+from freecad.ThreadWorkbench import ADDON_ROOT
+
 
 def QT_TRANSLATE_NOOP(context, text):
     """no-op marker for lupdate — returns text unchanged at runtime."""
     return text
 
-ICONDIR = os.path.join(App.getUserAppDataDir(), "Mod", "ThreadWorkbench", "icons")
+ICONDIR = os.path.join(ADDON_ROOT, "Resources", "Icons")
 
 
 class ThreadCreateCommand:
@@ -51,7 +53,7 @@ class ThreadCreateCommand:
         )
 
     def Activated(self):
-        from thread_dialog import ThreadTaskPanel
+        from freecad.ThreadWorkbench.thread_dialog import ThreadTaskPanel
         panel = ThreadTaskPanel(thread_mode="metric")
         Gui.Control.showDialog(panel)
 
@@ -76,6 +78,6 @@ class ThreadInchCommand:
         )
 
     def Activated(self):
-        from thread_dialog import ThreadTaskPanel
+        from freecad.ThreadWorkbench.thread_dialog import ThreadTaskPanel
         panel = ThreadTaskPanel(thread_mode="inch")
         Gui.Control.showDialog(panel)

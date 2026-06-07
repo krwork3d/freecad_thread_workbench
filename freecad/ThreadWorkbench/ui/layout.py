@@ -4,8 +4,8 @@
 
 from PySide import QtWidgets
 
-from translations import translate
-from ui.widgets import make_param_group, make_directions_group, make_runout_combo
+from freecad.ThreadWorkbench.translations import translate
+from freecad.ThreadWorkbench.ui.widgets import make_param_group, make_directions_group, make_runout_combo
 
 _CUSTOM = translate("Custom", "— Custom —")
 
@@ -26,7 +26,7 @@ def build_form(thread_mode, on_preset, on_custom, on_edge_to_edge,
 
     # ── Preset (inch only) ──
     if is_inch:
-        from thread_presets import inch_presets
+        from freecad.ThreadWorkbench.thread_presets import inch_presets
         presets = inch_presets()
         pres_layout = QtWidgets.QHBoxLayout()
         pres_layout.addWidget(QtWidgets.QLabel(

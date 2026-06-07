@@ -29,12 +29,12 @@ import importlib
 import os
 import pkgutil
 
-from threads.base import (
+from freecad.ThreadWorkbench.threads.base import (
     AbstractThreadProfile,
     AbstractPresetTable,
     PROFILE_REGISTRY,
 )
-from threads.registry import (
+from freecad.ThreadWorkbench.threads.registry import (
     PresetRegistry,
     GLOBAL_REGISTRY,
     register_preset_table,
@@ -62,7 +62,7 @@ def _autodiscover_standards():
             continue
         for module_name in _AUTOLOAD_MODULES:
             try:
-                importlib.import_module(f"threads.{name}.{module_name}")
+                importlib.import_module(f"freecad.ThreadWorkbench.threads.{name}.{module_name}")
             except ModuleNotFoundError:
                 # Optional module (e.g. presets.py absent for profile-only
                 # standards): silently skip.

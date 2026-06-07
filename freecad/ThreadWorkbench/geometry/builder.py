@@ -12,8 +12,8 @@ Wires together:
 import FreeCAD as App
 import Part
 
-from translations import translate
-from threads import PROFILE_REGISTRY
+from freecad.ThreadWorkbench.translations import translate
+from freecad.ThreadWorkbench.threads import PROFILE_REGISTRY
 
 from .frame import build_local_frame
 from .helix import build_helix

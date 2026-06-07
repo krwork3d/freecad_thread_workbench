@@ -22,8 +22,8 @@
 import FreeCAD as App
 from PySide import QtWidgets
 
-from translations import translate
-from geometry import create_thread
+from freecad.ThreadWorkbench.translations import translate
+from freecad.ThreadWorkbench.geometry import create_thread
 
 
 class CreationMixin:

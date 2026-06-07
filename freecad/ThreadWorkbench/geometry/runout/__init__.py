@@ -19,7 +19,7 @@ groove at the end of a thread:
 requested ``runout`` mode.
 """
 
-from translations import translate
+from freecad.ThreadWorkbench.translations import translate
 
 from .pocket import fill_pocket
 from .tapered import build_tapered

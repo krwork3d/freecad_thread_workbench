@@ -1,0 +1,21 @@
+[project]
+name = "freecad-thread-workbench"
+version = "0.2.0"
+description = "FreeCAD workbench for generating metric and inch threads in PartDesign"
+readme = "README.md"
+license = { text = "GPL-3.0-or-later" }
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "freecad-stubs",
+    "pyside6-stubs",
+]
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["freecad.ThreadWorkbench*"]

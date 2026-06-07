@@ -5,8 +5,8 @@
 
 from PySide import QtWidgets
 
-from translations import translate
-from ui.handlers import make_metric_diameter_handlers
+from freecad.ThreadWorkbench.translations import translate
+from freecad.ThreadWorkbench.ui.handlers import make_metric_diameter_handlers
 
 _CUSTOM = translate("Custom", "— Custom —")
 
@@ -62,7 +62,7 @@ def make_param_group(thread_mode, on_custom_changed, on_pitch_mm_changed):
         widgets.update(spin_dia=spin_dia, spin_tpi=spin_tpi,
                        lbl_pitch_mm=lbl_pitch_mm)
     else:
-        from thread_presets import metric_diameters
+        from freecad.ThreadWorkbench.thread_presets import metric_diameters
 
         diameters = metric_diameters()
 

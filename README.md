@@ -5,7 +5,7 @@
 
 **Thread Workbench** — это верстак для FreeCAD, предназначенный для удобной генерации метрических и дюймовых резьб
 
-Версия: **0.1.3**
+Версия: **0.2.0**
 
 ### Зачем нужен
 Этот верстак автоматизирует процесс: достаточно выбрать цилиндрическую грань, задать параметры резьбы — и геометрия будет построена корректно и параметрически.
@@ -48,7 +48,7 @@ GPL-3.0-or-later (см. файл [LICENSE](LICENSE)).
 
 **Thread Workbench** is a FreeCAD workbench for convenient generation of metric and inch threads.
 
-Version: **0.1.3**
+Version: **0.2.0**
 
 ### Why it exists
 This workbench automates the process: just select a cylindrical face, set the thread parameters — and the geometry will be built correctly and parametrically.
@@ -86,6 +86,6 @@ GPL-3.0-or-later (see [LICENSE](LICENSE)).
 ---
 
 ## Скриншоты / Screenshots
-![Work Example](screens/thread_example.gif)
-![Screenshot 1](screens/1.jpg)
-![Screenshot 2](screens/2.jpg)
+![Work Example](Resources/Media/thread_example.gif)
+![Screenshot 1](Resources/Media/1.jpg)
+![Screenshot 2](Resources/Media/2.jpg)

@@ -31,9 +31,9 @@ All UI logic is delegated to mixins in the ``ui`` package:
 import FreeCADGui as Gui
 from PySide import QtWidgets, QtCore
 
-from geometry import FaceAnalysis, ThreadPreview
-from thread_presets import profile_id_for_type
-from ui import (
+from freecad.ThreadWorkbench.geometry import FaceAnalysis, ThreadPreview
+from freecad.ThreadWorkbench.thread_presets import profile_id_for_type
+from freecad.ThreadWorkbench.ui import (
     setup_ui,
     PreviewMixin,
     ScanningMixin,

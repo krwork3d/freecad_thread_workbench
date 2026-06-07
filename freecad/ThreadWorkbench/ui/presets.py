@@ -2,8 +2,8 @@
 
 """Preset handling mixin for ThreadTaskPanel."""
 
-from translations import translate
-from thread_presets import inch_presets, find_inch_preset
+from freecad.ThreadWorkbench.translations import translate
+from freecad.ThreadWorkbench.thread_presets import inch_presets, find_inch_preset
 
 
 class PresetsMixin:
