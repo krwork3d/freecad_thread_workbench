@@ -22,8 +22,8 @@ Public API (used by the UI):
     - suggest_preset(r_mm)  -> (d_mm, p_mm)
 """
 
-from threads.base import AbstractPresetTable
-from threads.registry import register_preset_table
+from freecad.ThreadWorkbench.threads.base import AbstractPresetTable
+from freecad.ThreadWorkbench.threads.registry import register_preset_table
 
 
 # Floating-point tolerance for diameter / pitch comparisons (in mm).

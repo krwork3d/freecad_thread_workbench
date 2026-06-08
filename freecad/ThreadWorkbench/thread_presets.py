@@ -14,7 +14,7 @@ Adding a standard:  drop ``threads/<standard>/`` with profile.py +
                     presets.json (+ optional presets.py).
 """
 
-from threads.registry import GLOBAL_REGISTRY
+from freecad.ThreadWorkbench.threads.registry import GLOBAL_REGISTRY
 
 # ═══════════════════════════════════════════════════════════════════
 # Public API
@@ -133,7 +133,7 @@ def suggest_inch_preset(radius_mm):
     """
     table = _inch_table()
     if table is None:
-        from translations import translate
+        from freecad.ThreadWorkbench.translations import translate
         detected_inch = radius_mm * 2.0 / 25.4
         return (translate("Custom", "— Custom —"), detected_inch, 20)
     return table.suggest_preset(radius_mm)

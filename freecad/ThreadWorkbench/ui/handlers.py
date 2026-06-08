@@ -19,7 +19,7 @@
 
 """UI handlers and synchronisation logic for metric diameter/pitch combos."""
 
-from translations import translate
+from freecad.ThreadWorkbench.translations import translate
 
 _CUSTOM = translate("Custom", "— Custom —")
 
@@ -29,7 +29,7 @@ def make_metric_diameter_handlers(cb_diameter, spin_dia, cb_pitch, spin_pitch, d
 
     These closures keep the metric diameter/pitch combo-boxes and spinners in sync.
     """
-    from thread_presets import metric_pitches_for
+    from freecad.ThreadWorkbench.thread_presets import metric_pitches_for
 
     def _fill_pitches(diameter_cb, pitch_cb, pitch_spin):
         if diameter_cb.currentText() == _CUSTOM:

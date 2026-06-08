@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-# Thread Workbench - InitGui.py
-# FreeCAD exec()s this file, so __file__ is not set.
+# Thread Workbench — init_gui.py
+# Registers the workbench with FreeCAD's GUI.
+#
+# When loaded via <subdirectory> in package.xml, FreeCAD imports this
+# module — __file__ is available and points inside the addon.
 
 import os
-import sys
 
-import FreeCAD as App
 import FreeCADGui as Gui
+
+from freecad.ThreadWorkbench import ADDON_ROOT
 
 
 class ThreadWorkbench(Gui.Workbench):
@@ -22,12 +25,10 @@ class ThreadWorkbench(Gui.Workbench):
         return "Gui::PythonWorkbench"
 
     def Initialize(self):
-        import thread_commands
+        from freecad.ThreadWorkbench import thread_commands
 
-        # Register translations — standard FreeCAD way
-        trans_dir = os.path.join(
-            App.getUserAppDataDir(), "Mod", "ThreadWorkbench", "translations")
-        Gui.addLanguagePath(trans_dir)
+        # Register translations — relative to addon root
+        Gui.addLanguagePath(os.path.join(ADDON_ROOT, "translations"))
         Gui.updateLocale()
 
         self.appendToolbar(
@@ -44,11 +45,8 @@ class ThreadWorkbench(Gui.Workbench):
         pass
 
 
-wb_dir = os.path.join(App.getUserAppDataDir(), "Mod", "ThreadWorkbench")
-if wb_dir not in sys.path:
-    sys.path.insert(0, wb_dir)
-
-ThreadWorkbench.Icon = os.path.join(wb_dir, "icons", "ThreadWorkbench.svg")
+ThreadWorkbench.Icon = os.path.join(
+    ADDON_ROOT, "Resources", "Icons", "ThreadWorkbench.svg")
 ThreadWorkbench.commands = ["ThreadCreate", "ThreadInchCreate"]
 
 Gui.addWorkbench(ThreadWorkbench())

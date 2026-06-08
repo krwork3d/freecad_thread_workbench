@@ -3,7 +3,7 @@
 
 """UI assembly for the Thread Workbench task panel — public entry point."""
 
-from ui.layout import build_form as setup_ui
+from freecad.ThreadWorkbench.ui.layout import build_form as setup_ui
 
 __all__ = ["setup_ui"]
 

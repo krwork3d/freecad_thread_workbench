@@ -3,7 +3,7 @@
 
 import FreeCADGui as Gui
 
-from translations import translate
+from freecad.ThreadWorkbench.translations import translate
 
 
 class FaceAnalysis:

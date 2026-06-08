@@ -3,9 +3,9 @@
 
 """Face scanning mixin for ThreadTaskPanel."""
 
-from translations import translate
-from geometry import FaceAnalysis
-from thread_presets import suggest_metric_preset, suggest_inch_preset
+from freecad.ThreadWorkbench.translations import translate
+from freecad.ThreadWorkbench.geometry import FaceAnalysis
+from freecad.ThreadWorkbench.thread_presets import suggest_metric_preset, suggest_inch_preset
 
 
 class ScanningMixin:

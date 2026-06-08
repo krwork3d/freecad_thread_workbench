@@ -3,7 +3,7 @@
 
 from pivy import coin
 
-from threads import PROFILE_REGISTRY
+from freecad.ThreadWorkbench.threads import PROFILE_REGISTRY
 
 from ..frame import build_local_frame
 

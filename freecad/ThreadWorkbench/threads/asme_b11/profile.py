@@ -7,7 +7,7 @@ Truncated trapezoid with a rounded root for external threads.
 import math
 import FreeCAD as App
 
-from threads.base import AbstractThreadProfile, _register
+from freecad.ThreadWorkbench.threads.base import AbstractThreadProfile, _register
 
 
 # Exact theoretical UNR root radius factor per ASME B1.1: H/8 = 0.108253175

@@ -28,8 +28,8 @@ Public API (used by the UI):
     - suggest_preset(r_mm)     -> (name, d_inch, tpi)
 """
 
-from threads.base import AbstractPresetTable
-from threads.registry import register_preset_table
+from freecad.ThreadWorkbench.threads.base import AbstractPresetTable
+from freecad.ThreadWorkbench.threads.registry import register_preset_table
 
 
 # Floating-point tolerance for diameter comparisons (in inches).
@@ -94,7 +94,7 @@ class InchPresetTable(AbstractPresetTable):
 
         Returns (preset_name, diameter_inch, tpi).
         """
-        from translations import translate
+        from freecad.ThreadWorkbench.translations import translate
 
         detected_inch = radius_mm * 2.0 / 25.4
         for size in sorted(self.sizes, key=lambda s: s["diameter_inch"]):
