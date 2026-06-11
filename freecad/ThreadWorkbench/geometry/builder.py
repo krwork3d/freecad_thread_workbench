@@ -72,7 +72,11 @@ def create_thread(
     # ── Auto-length «edge-to-edge» ──
     if not length or length <= 0:
         if len(edges) >= 2:
-            length = abs(edges[-1][0] - edges[0][0])
+            # Base length is the distance between edges.
+            # Adjust for offset: negative offset (chamfer) extends the thread,
+            # positive offset shortens it, so the thread always reaches the far edge.
+            base_length = abs(edges[-1][0] - edges[0][0])
+            length = base_length - offset
         else:
             raise RuntimeError(
                 translate("err_not_enough_edges",
@@ -115,7 +119,10 @@ def create_thread(
         main_helix_height = length + pitch * 0.5
 
     # Pre-cut axial length depends on runout mode:
-    #  - "pocket": must reach far_end (offset+length+P from ec_start)
+    #  - "pocket": must reach far_end (offset+length+P from ec_start).
+    #              In edge-to-edge mode, far_end may extend beyond the
+    #              cylinder face (to mate with adjacent features like a
+    #              bolt head), so pre-cut must cover that extended length.
     #  - "tapered": must cover the conical fade zone (+P*0.5)
     #  - others: just the main helix sweep (path + last profile overshoot)
     if runout == "pocket":
@@ -181,10 +188,18 @@ def create_thread(
     # The PartDesign helix sweeps a profile of pitch-tall cross-section,
     # so the visible groove on the cylinder extends ONE FULL PITCH past
     # the helix path tip. Anchor the runout's forward edge at this true
-    # groove-tip position, but never past the cylinder's far face —
-    # otherwise the feature would land in empty space and have no effect
-    # (typical for auto-length external threads where the helix path
-    # already runs flush with the face).
+    # groove-tip position.
+    #
+    # For subtractive runouts (tapered, undercut), we clamp to the
+    # cylinder's far face to avoid features in empty space (typical for
+    # auto-length external threads where the helix path already runs
+    # flush with the face).
+    #
+    # For additive runouts (pocket), we allow the fill to extend beyond
+    # the cylinder boundary so it can properly close the groove and mate
+    # with adjacent features (e.g., bolt head). This is essential for
+    # edge-to-edge threads where the thread must transition smoothly
+    # into a non-cylindrical feature.
 
     # The helix lives on the cylindrical surface, which spans from
     # ec_start (the user-selected start edge) toward ec_end (the other
@@ -209,18 +224,29 @@ def create_thread(
     cyl_end_dist = (ec_end - ec_start).dot(helix_dir)
     groove_tip_dist = offset + length + pitch  # along helix_dir from ec_start
 
-    if cyl_end_dist > 0.0:
-        forward_dist = min(groove_tip_dist, cyl_end_dist)
-    else:
+    # For additive runout (pocket), we want the fill to start at the
+    # actual thread end (groove_tip) regardless of cylinder boundary,
+    # so it properly closes the groove and can extend to mate with
+    # adjacent features (e.g., bolt head). For subtractive runouts
+    # (tapered, undercut), we still clamp to the cylinder boundary
+    # to avoid features in empty space.
+    if runout == "pocket":
         forward_dist = groove_tip_dist
+    else:
+        if cyl_end_dist > 0.0:
+            forward_dist = min(groove_tip_dist, cyl_end_dist)
+        else:
+            forward_dist = groove_tip_dist
 
     far_end = ec_start + helix_dir * forward_dist
 
     # Position of the user-specified thread end (for undercut anchor).
     # This is the boundary where the full-profile thread terminates,
     # placed in the same 3D direction the helix actually grows.
+    # For pocket runout, we don't clamp to cylinder boundary to allow
+    # the fill to extend to adjacent features (e.g., bolt head).
     thread_end_dist = offset + length
-    if cyl_end_dist > 0.0:
+    if runout != "pocket" and cyl_end_dist > 0.0:
         thread_end_dist = min(thread_end_dist, cyl_end_dist)
     thread_end = ec_start + helix_dir * thread_end_dist
 

@@ -47,4 +47,5 @@ class PresetsMixin:
     def _on_edge_to_edge(self, checked):
         """Enable/disable length fields based on auto-length mode."""
         self._widgets["spin_len"].setEnabled(not checked)
-        self._widgets["spin_off"].setEnabled(not checked)
+        # Offset remains editable in edge-to-edge mode
+        self._widgets["spin_off"].setEnabled(True)
