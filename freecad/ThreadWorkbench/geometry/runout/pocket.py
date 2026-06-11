@@ -10,9 +10,12 @@ import Part
 
 from ..frame import build_local_frame
 
+# Enable debug logging
+DEBUG = True
+
 
 def fill_pocket(body, far_end, back_dir, pitch, cyl_radius, is_external,
-                diameter, profile):
+                diameter, profile, clearance=0.05):
     """Additive cylindrical fill at the far end of the thread.
 
     Revolves a rectangle (``r_min..r_max`` radially, ``pitch`` axially)
@@ -20,12 +23,16 @@ def fill_pocket(body, far_end, back_dir, pitch, cyl_radius, is_external,
     The fill extends BACK from ``far_end`` into the thread body and
     covers one full turn of the helix — enough to close the groove at
     every angular position.
+
+    The outer radius is extended by ``clearance + 0.01`` to ensure no gap
+    between the fill and adjacent features (e.g., bolt head).
     """
     h_work = profile._working_depth(pitch)
     r_surface, r_root = profile._surface_radii(cyl_radius, h_work, is_external)
 
     r_min = min(r_surface, r_root) + 0.01
-    r_max = max(r_surface, r_root) - 0.01
+    # Extend outer radius by clearance + 0.01 to avoid gaps
+    r_max = max(r_surface, r_root) + clearance + 0.01
 
     # Y = back_dir → revolution extends BACK into the thread body
     _, rot = build_local_frame(back_dir)
