@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Selection analysis for a cylindrical face inside a PartDesign::Body."""
 
+import FreeCAD as App
 import FreeCADGui as Gui
 
 from freecad.ThreadWorkbench.translations import translate
@@ -72,14 +73,30 @@ class FaceAnalysis:
         axis = surf.Axis.normalize()
         radius = surf.Radius
 
-        # Circular edges
+        # Circular edges (including elliptical for angled holes)
         edge_params = []  # (t_along_axis, edge_index, center)
         for i, edge in enumerate(face.Edges):
             curve = edge.Curve
             if hasattr(curve, "Radius") and hasattr(curve, "Center"):
+                # Perfect circle
                 ec = curve.Center
                 t = ec.dot(axis)
                 edge_params.append((t, i + 1, ec))
+            elif hasattr(curve, "MajorRadius") and hasattr(curve, "MinorRadius") and hasattr(curve, "Center"):
+                # Elliptical edge (angled hole)
+                ec = curve.Center
+                t = ec.dot(axis)
+                edge_params.append((t, i + 1, ec))
+            elif edge.isClosed() and hasattr(edge, "BoundingBox"):
+                # Other closed edges (e.g., spline) — use bounding box center
+                bb = edge.BoundingBox
+                ec = App.Vector(bb.XMin + bb.XLength/2, 
+                               bb.YMin + bb.YLength/2, 
+                               bb.ZMin + bb.ZLength/2)
+                # Only if approximately perpendicular to axis
+                if abs(ec.dot(axis)) > 0.5 * bb.DiagonalLength:
+                    t = ec.dot(axis)
+                    edge_params.append((t, i + 1, ec))
 
         edge_params.sort(key=lambda x: x[0])
 

@@ -51,19 +51,21 @@ def create_thread(
 
     doc = body.Document
 
-    # ── Helix direction ──
+    # ── Thread direction ──
+    # Always from the chosen start edge (edges[0]) to the other edge (edges[-1]).
+    # The user selects which edge to start from; the thread goes to the other edge.
     if len(edges) >= 2:
-        t_start = edges[0][0]
-        t_other = edges[-1][0]
-        natural_dir = axis if t_other > t_start else -axis
+        edge_vector = edges[-1][2] - edges[0][2]
+        # Project onto cylinder axis to get direction along the axis
+        if edge_vector.dot(axis) >= 0:
+            thread_dir = axis
+        else:
+            thread_dir = -axis
     else:
-        natural_dir = axis
+        thread_dir = axis
 
-    # Internal thread profile goes outward (r_root > r_surface),
-    # so the helix direction must be inverted relative to external.
-    effective_reversed = is_reversed if is_external else not is_reversed
-    cut_dir = -natural_dir if effective_reversed else natural_dir
-    helix_reversed = (cut_dir.dot(axis) < 0)
+    # is_reversed flips the direction (start from the other edge)
+    cut_dir = -thread_dir if is_reversed else thread_dir
 
     # ── Start point ──
     ec_start = edges[0][2]                     # already on cylinder axis
@@ -147,7 +149,12 @@ def create_thread(
         cyl_radius = target_radius
 
     # ── Sketch ──
-    rad, final_rot = build_local_frame(axis)
+    # Orient the sketch along cut_dir (not axis) so the helix always
+    # starts at `origin` and grows along cut_dir — matching the live
+    # preview and the other runout features (pre-cut, tapered, undercut).
+    # This avoids relying on PartDesign Helix ``Reversed``, which shifts
+    # the spiral start to the opposite end of the path.
+    rad, final_rot = build_local_frame(cut_dir)
 
     sketch = doc.addObject("Sketcher::SketchObject",
                            profile.label(diameter, pitch, "Profile"))
@@ -171,10 +178,12 @@ def create_thread(
             main_helix_height = max(length + pitch * 0.5 - y_back, pitch * 0.5)
 
     # ── Helix ──
+    # Reversed is always False: the sketch is already oriented along
+    # cut_dir, so the helix grows from `origin` in the correct direction.
     try:
         helix = build_helix(body, sketch, pitch, main_helix_height,
                             profile.label(diameter, pitch, "Helix"),
-                            left_handed, helix_reversed)
+                            left_handed, False)
         doc.recompute()
     except Exception as e:
         # If helix fails, sketch & runout stay — transaction will roll back
@@ -201,24 +210,10 @@ def create_thread(
     # edge-to-edge threads where the thread must transition smoothly
     # into a non-cylindrical feature.
 
-    # The helix lives on the cylindrical surface, which spans from
-    # ec_start (the user-selected start edge) toward ec_end (the other
-    # circular edge of the same face). That direction is the only one
-    # guaranteed to be "along the actual thread" — unlike `cut_dir`,
-    # whose sign is flipped between external/internal threads and is
-    # then compensated by `helix.Reversed`. We use it directly to anchor
-    # axisymmetric runout features so they always land on the same side
-    # as the helix, regardless of internal sign conventions.
+    # Runout direction: from start edge to end edge (same as cut_dir)
     ec_start = edges[0][2]
     ec_end = edges[-1][2]
-    if len(edges) >= 2:
-        delta = ec_end - ec_start
-        if delta.Length > 1e-9:
-            helix_dir = delta.normalize()
-        else:
-            helix_dir = cut_dir
-    else:
-        helix_dir = cut_dir
+    helix_dir = cut_dir  # Use the same direction as the helix
     back_dir = -helix_dir
 
     cyl_end_dist = (ec_end - ec_start).dot(helix_dir)

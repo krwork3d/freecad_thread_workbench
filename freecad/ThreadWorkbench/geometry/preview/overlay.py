@@ -42,17 +42,17 @@ class ThreadPreview:
             self.remove()
             return
 
-        # Helix direction
+        # Thread direction: from the chosen start edge (edges[0]) to the
+        # other edge (edges[-1]), projected onto the cylinder axis. This
+        # mirrors the logic in geometry.builder.create_thread so the
+        # preview matches the final thread placement exactly.
         if len(edges) >= 2:
-            t_start = edges[0][0]
-            t_other = edges[-1][0]
-            natural_dir = axis if t_other > t_start else -axis
+            edge_vector = edges[-1][2] - edges[0][2]
+            natural_dir = axis if edge_vector.dot(axis) >= 0 else -axis
         else:
             natural_dir = axis
 
-        effective_reversed = is_reversed if is_external else not is_reversed
-        cut_dir = -natural_dir if effective_reversed else natural_dir
-        helix_reversed = (cut_dir.dot(axis) < 0)
+        cut_dir = -natural_dir if is_reversed else natural_dir
 
         ec_start = edges[0][2]
         origin = ec_start + cut_dir * (offset - pitch * 0.5)
@@ -68,27 +68,29 @@ class ThreadPreview:
         # Build the scene
         sep = coin.SoSeparator()
 
-        # Helix line (orange)
+        # Helix line (orange) — oriented along cut_dir, matching the
+        # final PartDesign helix (sketch Y → cut_dir, Reversed=False).
         helix_sep = make_helix_line(
-            axis, origin, pitch, length, cyl_radius,
-            left_handed=left_handed, helix_reversed=helix_reversed,
+            cut_dir, origin, pitch, length, cyl_radius,
+            left_handed=left_handed,
         )
         sep.addChild(helix_sep)
 
-        # Profile cross-section (cyan)
+        # Profile cross-section (cyan) — same orientation as the helix.
         profile_sep = make_profile_line(
-            axis, origin, pitch, cyl_radius, offset,
+            cut_dir, origin, pitch, cyl_radius,
             is_external, profile_id,
         )
         sep.addChild(profile_sep)
 
-        # Axis line (thin grey) — helps orientation
+        # Axis line (thin grey) — helps orientation; drawn along cut_dir
+        # so it follows the actual thread growth direction.
         axis_len = length + pitch
         axis_pts = [
             (origin.x, origin.y, origin.z),
-            (origin.x + axis.x * axis_len,
-             origin.y + axis.y * axis_len,
-             origin.z + axis.z * axis_len),
+            (origin.x + cut_dir.x * axis_len,
+             origin.y + cut_dir.y * axis_len,
+             origin.z + cut_dir.z * axis_len),
         ]
         axis_coords = coin.SoCoordinate3()
         axis_coords.point.setValues(axis_pts)

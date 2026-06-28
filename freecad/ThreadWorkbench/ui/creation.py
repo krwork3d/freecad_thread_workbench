@@ -43,7 +43,11 @@ class CreationMixin:
         self._preview.remove()
         self._widgets["chk_preview"].setChecked(False)
 
-        self.scan_selection()
+        # Use the already-current analysis instead of re-scanning.
+        # scan_selection() clears and refills cb_start_edge which resets
+        # the combo index to 0, silently discarding the user's edge choice.
+        # The analysis is kept up-to-date by the selection poll timer
+        # (every 400 ms) so a fresh scan is unnecessary here.
         if not self._analysis.ok:
             QtWidgets.QMessageBox.warning(
                 self.form,

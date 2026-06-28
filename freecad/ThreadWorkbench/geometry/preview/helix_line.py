@@ -7,14 +7,15 @@ import FreeCAD as App
 from pivy import coin
 
 
-def make_helix_line(axis, origin, pitch, length, radius,
-                    left_handed=False, helix_reversed=False,
-                    segments_per_pitch=48):
-    """Build a ``SoSeparator`` representing the helix path as an orange line."""
-    n_segments = max(int(length / pitch * segments_per_pitch), 24)
+def make_helix_line(cut_dir, origin, pitch, length, radius,
+                    left_handed=False, segments_per_pitch=48):
+    """Build a ``SoSeparator`` representing the helix path as an orange line.
 
-    # Direction along the helix
-    cut_dir = -axis if helix_reversed else axis
+    ``cut_dir`` is the (normalised) direction along which the helix grows
+    from ``origin`` — identical to the orientation used by the final
+    PartDesign helix (sketch Y → cut_dir, Reversed=False).
+    """
+    n_segments = max(int(length / pitch * segments_per_pitch), 24)
 
     pts = []
     for i in range(n_segments + 1):
@@ -26,7 +27,7 @@ def make_helix_line(axis, origin, pitch, length, radius,
         y = radius * math.sin(angle)
         z = t
         v = App.Vector(x, y, z)
-        # Rotate to align with axis
+        # Rotate so local Z → cut_dir (helix grows along cut_dir)
         rot = App.Rotation(App.Vector(0, 0, 1), cut_dir)
         v = rot.multVec(v)
         v = v + origin
