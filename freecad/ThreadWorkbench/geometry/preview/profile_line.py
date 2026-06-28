@@ -8,13 +8,13 @@ from freecad.ThreadWorkbench.threads import PROFILE_REGISTRY
 from ..frame import build_local_frame
 
 
-def make_profile_line(cut_dir, origin, pitch, radius,
+def make_profile_line(axis, origin, pitch, radius,
                       is_external, profile_id="iso68_1"):
     """Build a ``SoSeparator`` showing the thread profile cross-section.
 
     ``origin`` is the already-computed start position (including offset)
     in 3D world coordinates; the profile is placed there, rotated so
-    sketch Y → ``cut_dir`` — matching the final PartDesign sketch.
+    sketch Y → ``axis``.
     """
     profile_class = PROFILE_REGISTRY.get(profile_id)
     if profile_class is None:
@@ -22,8 +22,8 @@ def make_profile_line(cut_dir, origin, pitch, radius,
     profile = profile_class()
     pts = profile.build_profile(pitch, radius, is_external)
 
-    # Rotation: sketch Y → cut_dir, sketch X → perpendicular (shared helper).
-    _, final_rot = build_local_frame(cut_dir)
+    # Rotation: sketch Y → axis, sketch X → perpendicular (shared helper).
+    _, final_rot = build_local_frame(axis)
 
     world_pts = []
     for p in pts:

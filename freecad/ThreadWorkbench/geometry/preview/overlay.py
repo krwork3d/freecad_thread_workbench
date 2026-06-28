@@ -53,6 +53,7 @@ class ThreadPreview:
             natural_dir = axis
 
         cut_dir = -natural_dir if is_reversed else natural_dir
+        helix_reversed = (cut_dir.dot(axis) < 0)
 
         ec_start = edges[0][2]
         origin = ec_start + cut_dir * (offset - pitch * 0.5)
@@ -68,29 +69,27 @@ class ThreadPreview:
         # Build the scene
         sep = coin.SoSeparator()
 
-        # Helix line (orange) — oriented along cut_dir, matching the
-        # final PartDesign helix (sketch Y → cut_dir, Reversed=False).
+        # Helix line (orange)
         helix_sep = make_helix_line(
-            cut_dir, origin, pitch, length, cyl_radius,
-            left_handed=left_handed,
+            axis, origin, pitch, length, cyl_radius,
+            left_handed=left_handed, helix_reversed=helix_reversed,
         )
         sep.addChild(helix_sep)
 
-        # Profile cross-section (cyan) — same orientation as the helix.
+        # Profile cross-section (cyan)
         profile_sep = make_profile_line(
-            cut_dir, origin, pitch, cyl_radius,
+            axis, origin, pitch, cyl_radius,
             is_external, profile_id,
         )
         sep.addChild(profile_sep)
 
-        # Axis line (thin grey) — helps orientation; drawn along cut_dir
-        # so it follows the actual thread growth direction.
+        # Axis line (thin grey) — helps orientation
         axis_len = length + pitch
         axis_pts = [
             (origin.x, origin.y, origin.z),
-            (origin.x + cut_dir.x * axis_len,
-             origin.y + cut_dir.y * axis_len,
-             origin.z + cut_dir.z * axis_len),
+            (origin.x + axis.x * axis_len,
+             origin.y + axis.y * axis_len,
+             origin.z + axis.z * axis_len),
         ]
         axis_coords = coin.SoCoordinate3()
         axis_coords.point.setValues(axis_pts)

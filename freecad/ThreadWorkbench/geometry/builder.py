@@ -66,6 +66,7 @@ def create_thread(
 
     # is_reversed flips the direction (start from the other edge)
     cut_dir = -thread_dir if is_reversed else thread_dir
+    helix_reversed = (cut_dir.dot(axis) < 0)
 
     # ── Start point ──
     ec_start = edges[0][2]                     # already on cylinder axis
@@ -149,12 +150,7 @@ def create_thread(
         cyl_radius = target_radius
 
     # ── Sketch ──
-    # Orient the sketch along cut_dir (not axis) so the helix always
-    # starts at `origin` and grows along cut_dir — matching the live
-    # preview and the other runout features (pre-cut, tapered, undercut).
-    # This avoids relying on PartDesign Helix ``Reversed``, which shifts
-    # the spiral start to the opposite end of the path.
-    rad, final_rot = build_local_frame(cut_dir)
+    rad, final_rot = build_local_frame(axis)
 
     sketch = doc.addObject("Sketcher::SketchObject",
                            profile.label(diameter, pitch, "Profile"))
@@ -178,12 +174,10 @@ def create_thread(
             main_helix_height = max(length + pitch * 0.5 - y_back, pitch * 0.5)
 
     # ── Helix ──
-    # Reversed is always False: the sketch is already oriented along
-    # cut_dir, so the helix grows from `origin` in the correct direction.
     try:
         helix = build_helix(body, sketch, pitch, main_helix_height,
                             profile.label(diameter, pitch, "Helix"),
-                            left_handed, False)
+                            left_handed, helix_reversed)
         doc.recompute()
     except Exception as e:
         # If helix fails, sketch & runout stay — transaction will roll back
