@@ -62,7 +62,10 @@ def make_thread_surface(
     n = max(int(length / pitch * segments_per_pitch), 16)
     n = min(n, max_segments)
 
-    twist_sign = -1.0 if left_handed else 1.0
+    # PartDesign::SubtractiveHelix with Reversed=True flips the winding
+    # direction — mirror the handedness to match.
+    flip = -1.0 if helix_reversed else 1.0
+    twist_sign = flip * (-1.0 if left_handed else 1.0)
 
     # Build vertex grid: n stations × m profile points (closed loop).
     coords_list = []
