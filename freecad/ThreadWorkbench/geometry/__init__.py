@@ -23,10 +23,12 @@ from .frame import build_local_frame
 from .face_analysis import FaceAnalysis
 from .builder import create_thread
 from .preview import ThreadPreview
+from .thread_frame import resolve_thread_frame
 
 __all__ = [
     "build_local_frame",
     "FaceAnalysis",
     "create_thread",
     "ThreadPreview",
+    "resolve_thread_frame",
 ]

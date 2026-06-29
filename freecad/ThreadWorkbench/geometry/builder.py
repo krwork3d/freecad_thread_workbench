@@ -18,6 +18,7 @@ from freecad.ThreadWorkbench.threads import PROFILE_REGISTRY
 from .frame import build_local_frame
 from .helix import build_helix
 from .precut import build_pre_cut
+from .thread_frame import resolve_thread_frame
 from . import runout as runout_module
 
 
@@ -51,40 +52,14 @@ def create_thread(
 
     doc = body.Document
 
-    # ── Thread direction ──
-    # Always from the chosen start edge (edges[0]) to the other edge (edges[-1]).
-    # The user selects which edge to start from; the thread goes to the other edge.
-    if len(edges) >= 2:
-        edge_vector = edges[-1][2] - edges[0][2]
-        # Project onto cylinder axis to get direction along the axis
-        if edge_vector.dot(axis) >= 0:
-            thread_dir = axis
-        else:
-            thread_dir = -axis
-    else:
-        thread_dir = axis
-
-    # is_reversed flips the direction (start from the other edge)
-    cut_dir = -thread_dir if is_reversed else thread_dir
+    # ── Resolve thread frame (direction, origin, length) ──
+    frame = resolve_thread_frame(axis, edges, is_reversed, offset, pitch, length)
+    thread_dir = frame['thread_dir']
+    cut_dir = frame['cut_dir']
+    ec_start = frame['ec_start']
+    origin = frame['origin']
+    length = frame['length']
     helix_reversed = (cut_dir.dot(axis) < 0)
-
-    # ── Start point ──
-    ec_start = edges[0][2]                     # already on cylinder axis
-    origin = ec_start + cut_dir * (offset - pitch * 0.5)
-
-    # ── Auto-length «edge-to-edge» ──
-    if not length or length <= 0:
-        if len(edges) >= 2:
-            # Base length is the distance between edges.
-            # Adjust for offset: negative offset (chamfer) extends the thread,
-            # positive offset shortens it, so the thread always reaches the far edge.
-            base_length = abs(edges[-1][0] - edges[0][0])
-            length = base_length - offset
-        else:
-            raise RuntimeError(
-                translate("err_not_enough_edges",
-                          "Not enough edges for auto-length. "
-                          "Specify thread length manually."))
 
     # ── Resolve profile ──
     profile_class = PROFILE_REGISTRY.get(profile_id)
@@ -205,8 +180,8 @@ def create_thread(
     # into a non-cylindrical feature.
 
     # Runout direction: from start edge to end edge (same as cut_dir)
-    ec_start = edges[0][2]
-    ec_end = edges[-1][2]
+    # ec_start already defined above from resolve_thread_frame
+    ec_end = frame['ec_end']
     helix_dir = cut_dir  # Use the same direction as the helix
     back_dir = -helix_dir
 

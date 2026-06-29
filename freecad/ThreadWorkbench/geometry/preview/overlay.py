@@ -9,6 +9,8 @@ every :meth:`ThreadPreview.update` call.
 import FreeCADGui as Gui
 from pivy import coin
 
+from freecad.ThreadWorkbench.geometry.thread_frame import resolve_thread_frame
+
 from .helix_line import make_helix_line
 from .profile_line import make_profile_line
 
@@ -42,29 +44,17 @@ class ThreadPreview:
             self.remove()
             return
 
-        # Thread direction: from the chosen start edge (edges[0]) to the
-        # other edge (edges[-1]), projected onto the cylinder axis. This
-        # mirrors the logic in geometry.builder.create_thread so the
-        # preview matches the final thread placement exactly.
-        if len(edges) >= 2:
-            edge_vector = edges[-1][2] - edges[0][2]
-            natural_dir = axis if edge_vector.dot(axis) >= 0 else -axis
-        else:
-            natural_dir = axis
+        # Resolve thread frame using shared logic (same as builder.create_thread)
+        try:
+            frame = resolve_thread_frame(axis, edges, is_reversed, offset, pitch, length)
+        except RuntimeError:
+            self.remove()
+            return
 
-        cut_dir = -natural_dir if is_reversed else natural_dir
+        cut_dir = frame['cut_dir']
+        origin = frame['origin']
+        length = frame['length']
         helix_reversed = (cut_dir.dot(axis) < 0)
-
-        ec_start = edges[0][2]
-        origin = ec_start + cut_dir * (offset - pitch * 0.5)
-
-        # Auto-length
-        if not length or length <= 0:
-            if len(edges) >= 2:
-                length = abs(edges[-1][0] - edges[0][0])
-            else:
-                self.remove()
-                return
 
         # Build the scene
         sep = coin.SoSeparator()
