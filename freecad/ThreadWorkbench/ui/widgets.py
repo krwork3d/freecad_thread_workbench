@@ -17,21 +17,23 @@ def make_param_group(thread_mode, on_custom_changed, on_pitch_mm_changed):
     Returns (group_box, dict_of_widgets).
 
     Metric: combos + spinners, always visible, mutually synced.
-    Inch:   spinners + preset (preset built in setup_ui).
+    Inch/BSP: spinners + preset (preset built in setup_ui).
     """
-    is_inch = thread_mode == "inch"
+    is_tpi = thread_mode in ("inch", "bsp")
     gb = QtWidgets.QGroupBox(translate("ParamGroup", "Thread Parameters"))
     gb_lay = QtWidgets.QVBoxLayout(gb)
     widgets = {}
 
-    if is_inch:
+    if is_tpi:
         # Diameter in inches
+        max_dia = 8.0 if thread_mode == "bsp" else 4.0
+        default_dia = 0.825 if thread_mode == "bsp" else 0.25
         dia_lay = QtWidgets.QHBoxLayout()
         dia_lay.addWidget(QtWidgets.QLabel(
             translate("InchDiaLabel", "Nominal diameter (inch):")))
         spin_dia = QtWidgets.QDoubleSpinBox()
-        spin_dia.setRange(0.01, 4.0)
-        spin_dia.setValue(0.25)
+        spin_dia.setRange(0.01, max_dia)
+        spin_dia.setValue(default_dia)
         spin_dia.setDecimals(4)
         spin_dia.setSingleStep(0.0625)
         spin_dia.valueChanged.connect(on_custom_changed)

@@ -13,10 +13,11 @@ from freecad.ThreadWorkbench import ADDON_ROOT
 
 
 class ThreadWorkbench(Gui.Workbench):
-    """Generator of metric and inch threads for PartDesign::Body."""
+    """Generator of metric, inch and BSP threads for PartDesign::Body."""
 
     MenuText = "Thread"
-    ToolTip = "Create metric (ISO 724) and inch (UNC/UNF) threads in PartDesign"
+    ToolTip = ("Create metric (ISO 724), inch (UNC/UNF) and BSP "
+               "(Whitworth 55°) threads in PartDesign")
 
     def __init__(self):
         Gui.Workbench.__init__(self)
@@ -32,11 +33,12 @@ class ThreadWorkbench(Gui.Workbench):
         Gui.updateLocale()
 
         self.appendToolbar(
-            "Thread", ["ThreadCreate", "ThreadInchCreate"])
+            "Thread", ["ThreadCreate", "ThreadInchCreate", "ThreadBspCreate"])
         self.appendMenu(
-            "Thread", ["ThreadCreate", "ThreadInchCreate"])
+            "Thread", ["ThreadCreate", "ThreadInchCreate", "ThreadBspCreate"])
         Gui.addCommand("ThreadCreate", thread_commands.ThreadCreateCommand())
         Gui.addCommand("ThreadInchCreate", thread_commands.ThreadInchCommand())
+        Gui.addCommand("ThreadBspCreate", thread_commands.ThreadBspCommand())
 
     def Activated(self):
         pass
@@ -47,6 +49,6 @@ class ThreadWorkbench(Gui.Workbench):
 
 ThreadWorkbench.Icon = os.path.join(
     ADDON_ROOT, "Resources", "Icons", "ThreadWorkbench.svg")
-ThreadWorkbench.commands = ["ThreadCreate", "ThreadInchCreate"]
+ThreadWorkbench.commands = ["ThreadCreate", "ThreadInchCreate", "ThreadBspCreate"]
 
 Gui.addWorkbench(ThreadWorkbench())

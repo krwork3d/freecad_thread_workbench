@@ -5,7 +5,9 @@
 
 from freecad.ThreadWorkbench.translations import translate
 from freecad.ThreadWorkbench.geometry import FaceAnalysis
-from freecad.ThreadWorkbench.thread_presets import suggest_metric_preset, suggest_inch_preset
+from freecad.ThreadWorkbench.thread_presets import (
+    suggest_metric_preset, suggest_inch_preset, suggest_bsp_preset,
+)
 
 
 class ScanningMixin:
@@ -29,8 +31,11 @@ class ScanningMixin:
 
         if self._first_scan or force_suggest:
             self._updating_ui = True
-            if self._thread_mode == "inch":
-                preset_name, dia_in, tpi = suggest_inch_preset(radius)
+            if self._thread_mode in ("inch", "bsp"):
+                if self._thread_mode == "bsp":
+                    preset_name, dia_in, tpi = suggest_bsp_preset(radius)
+                else:
+                    preset_name, dia_in, tpi = suggest_inch_preset(radius)
                 w["spin_dia"].setValue(dia_in)
                 w["spin_tpi"].setValue(tpi)
                 idx = w["cb_preset"].findText(preset_name)

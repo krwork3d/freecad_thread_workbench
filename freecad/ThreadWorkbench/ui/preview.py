@@ -10,7 +10,7 @@ class PreviewMixin:
     def _diameter_mm(self):
         """Return nominal diameter in mm."""
         w = self._widgets
-        if self._thread_mode == "inch":
+        if self._thread_mode in ("inch", "bsp"):
             return w["spin_dia"].value() * 25.4
         else:
             return w["spin_dia"].value()
@@ -19,7 +19,7 @@ class PreviewMixin:
     def _pitch_mm(self):
         """Return pitch in mm for create_thread."""
         w = self._widgets
-        if self._thread_mode == "inch":
+        if self._thread_mode in ("inch", "bsp"):
             return 25.4 / max(w["spin_tpi"].value(), 1)
         else:
             return w["spin_pitch"].value()

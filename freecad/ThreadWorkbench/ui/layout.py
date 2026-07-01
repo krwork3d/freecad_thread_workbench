@@ -17,17 +17,19 @@ def build_form(thread_mode, on_preset, on_custom, on_edge_to_edge,
     widgets — flat dict of all significant controls.
 
     Metric: combos + spinners for diameter/pitch (no flat preset).
-    Inch:   spinners + flat preset cb_preset.
+    Inch/BSP: spinners + flat preset cb_preset.
     """
     form = QtWidgets.QWidget()
     form.setMinimumWidth(400)
     layout = QtWidgets.QVBoxLayout(form)
-    is_inch = thread_mode == "inch"
+    is_tpi = thread_mode in ("inch", "bsp")
 
-    # ── Preset (inch only) ──
-    if is_inch:
-        from freecad.ThreadWorkbench.thread_presets import inch_presets
-        presets = inch_presets()
+    # ── Preset (inch / bsp) ──
+    if is_tpi:
+        from freecad.ThreadWorkbench.thread_presets import (
+            inch_presets, bsp_presets,
+        )
+        presets = bsp_presets() if thread_mode == "bsp" else inch_presets()
         pres_layout = QtWidgets.QHBoxLayout()
         pres_layout.addWidget(QtWidgets.QLabel(
             translate("PresetLabel", "Preset:")))

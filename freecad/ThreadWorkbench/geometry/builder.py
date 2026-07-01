@@ -89,8 +89,11 @@ def create_thread(
         target_radius = (nominal_radius - h_work) + clearance
 
     # Compute helix height early (needed for pre-cut extent).
-    # y_back = 15P/16 for all standard threads (ISO 68-1 / ASME B1.1).
-    y_back_est = 15.0 * pitch / 16.0
+    # y_back_est is a conservative upper bound: P for all profiles
+    # (ISO 68-1 crest sits at 15P/16, BSP rounded crest spans full P).
+    # The exact value is refined later from the actual profile points
+    # for tapered runout (see line 147).
+    y_back_est = pitch
     if runout == "tapered":
         main_helix_height = max(length + pitch * 0.5 - y_back_est, pitch * 0.5)
     else:
@@ -141,8 +144,9 @@ def create_thread(
     doc.recompute()
 
     # ── Main helix height ──
-    # Already pre-computed above (before pre-cut) using y_back_est = 15P/16.
-    # Refine for tapered mode with the actual profile y_back if it differs.
+    # Already pre-computed above (before pre-cut) using a conservative
+    # y_back_est = P.  Refine for tapered mode with the actual profile
+    # y_back if it differs from the estimate.
     if runout == "tapered":
         y_back = max(p.y for p in pts)
         if abs(y_back - y_back_est) > 1e-6:

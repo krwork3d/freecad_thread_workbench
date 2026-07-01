@@ -81,3 +81,29 @@ class ThreadInchCommand:
         from freecad.ThreadWorkbench.thread_dialog import ThreadTaskPanel
         panel = ThreadTaskPanel(thread_mode="inch")
         Gui.Control.showDialog(panel)
+
+
+class ThreadBspCommand:
+    """Command: open the BSP thread generation dialog."""
+
+    def GetResources(self):
+        return {
+            "Pixmap": os.path.join(ICONDIR, "ThreadBspCreate.svg"),
+            "MenuText": QT_TRANSLATE_NOOP("ThreadBspCreate",
+                                           "Create BSP thread"),
+            "ToolTip": QT_TRANSLATE_NOOP("ThreadBspCreate",
+                                          "Create a BSP thread (Whitworth 55°, "
+                                          "BS 21 / ISO 228-1) on a cylindrical "
+                                          "face inside a PartDesign::Body"),
+        }
+
+    def IsActive(self):
+        return (
+            App.ActiveDocument is not None
+            and Gui.Selection.hasSelection()
+        )
+
+    def Activated(self):
+        from freecad.ThreadWorkbench.thread_dialog import ThreadTaskPanel
+        panel = ThreadTaskPanel(thread_mode="bsp")
+        Gui.Control.showDialog(panel)

@@ -1,0 +1,33 @@
+{
+  "profile_id": "bsp",
+  "table_type": "bsp",
+  "label": "BSP (BS 21 / ISO 228-1)",
+  "_schema": "Each size lists the nominal label, major diameter in inches, and TPI. Display name is 'G{label}'.",
+  "sizes": [
+    {"label": "1/16", "diameter_inch": 0.3040, "options": [{"tpi": 28}]},
+    {"label": "1/8",  "diameter_inch": 0.3830, "options": [{"tpi": 28}]},
+    {"label": "1/4",  "diameter_inch": 0.5180, "options": [{"tpi": 19}]},
+    {"label": "3/8",  "diameter_inch": 0.6560, "options": [{"tpi": 19}]},
+    {"label": "1/2",  "diameter_inch": 0.8250, "options": [{"tpi": 14}]},
+    {"label": "5/8",  "diameter_inch": 0.9020, "options": [{"tpi": 14}]},
+    {"label": "3/4",  "diameter_inch": 1.0410, "options": [{"tpi": 14}]},
+    {"label": "7/8",  "diameter_inch": 1.1890, "options": [{"tpi": 14}]},
+    {"label": "1",    "diameter_inch": 1.3090, "options": [{"tpi": 11}]},
+    {"label": "1 1/8","diameter_inch": 1.4920, "options": [{"tpi": 11}]},
+    {"label": "1 1/4","diameter_inch": 1.6500, "options": [{"tpi": 11}]},
+    {"label": "1 3/8","diameter_inch": 1.7450, "options": [{"tpi": 11}]},
+    {"label": "1 1/2","diameter_inch": 1.8820, "options": [{"tpi": 11}]},
+    {"label": "1 3/4","diameter_inch": 2.1160, "options": [{"tpi": 11}]},
+    {"label": "2",    "diameter_inch": 2.3470, "options": [{"tpi": 11}]},
+    {"label": "2 1/4","diameter_inch": 2.5870, "options": [{"tpi": 11}]},
+    {"label": "2 1/2","diameter_inch": 2.9600, "options": [{"tpi": 11}]},
+    {"label": "2 3/4","diameter_inch": 3.2100, "options": [{"tpi": 11}]},
+    {"label": "3",    "diameter_inch": 3.4600, "options": [{"tpi": 11}]},
+    {"label": "3 1/2","diameter_inch": 3.9600, "options": [{"tpi": 11}]},
+    {"label": "4",    "diameter_inch": 4.4500, "options": [{"tpi": 11}]},
+    {"label": "4 1/2","diameter_inch": 4.9500, "options": [{"tpi": 11}]},
+    {"label": "5",    "diameter_inch": 5.4500, "options": [{"tpi": 11}]},
+    {"label": "5 1/2","diameter_inch": 5.9500, "options": [{"tpi": 11}]},
+    {"label": "6",    "diameter_inch": 6.5600, "options": [{"tpi": 11}]}
+  ]
+}
