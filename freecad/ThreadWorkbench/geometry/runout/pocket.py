@@ -10,6 +10,9 @@ import Part
 
 from ..frame import build_local_frame
 
+# Enable debug logging
+DEBUG = True
+
 
 def fill_pocket(body, far_end, back_dir, pitch, cyl_radius, is_external,
                 diameter, profile):
@@ -24,7 +27,7 @@ def fill_pocket(body, far_end, back_dir, pitch, cyl_radius, is_external,
     h_work = profile._working_depth(pitch)
     r_surface, r_root = profile._surface_radii(cyl_radius, h_work, is_external)
 
-    r_min = min(r_surface, r_root) + 0.01
+    r_min = min(r_surface, r_root) 
     r_max = max(r_surface, r_root) - 0.01
 
     # Y = back_dir → revolution extends BACK into the thread body

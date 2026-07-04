@@ -137,3 +137,41 @@ def suggest_inch_preset(radius_mm):
         detected_inch = radius_mm * 2.0 / 25.4
         return (translate("Custom", "— Custom —"), detected_inch, 20)
     return table.suggest_preset(radius_mm)
+
+
+# ═══════════════════════════════════════════════════════════════════
+# Convenience functions for BSP threads (Whitworth 55°)
+# ═══════════════════════════════════════════════════════════════════
+
+def _bsp_table():
+    """Return BSPPresetTable, or None."""
+    return registry.get_by_type("bsp")
+
+
+def bsp_presets():
+    """dict[name] -> (d_inch, tpi) — all BSP presets."""
+    table = _bsp_table()
+    if table is None:
+        return {}
+    return table.all_presets
+
+
+def find_bsp_preset(diameter_inch, tpi):
+    """Find a BSP preset name, or None."""
+    table = _bsp_table()
+    if table is None:
+        return None
+    return table.find_preset(diameter_inch, tpi)
+
+
+def suggest_bsp_preset(radius_mm):
+    """Suggest a BSP preset by face radius (mm).
+
+    Returns (preset_name, diameter_inch, tpi).
+    """
+    table = _bsp_table()
+    if table is None:
+        from freecad.ThreadWorkbench.translations import translate
+        detected_inch = radius_mm * 2.0 / 25.4
+        return (translate("Custom", "— Custom —"), detected_inch, 14)
+    return table.suggest_preset(radius_mm)

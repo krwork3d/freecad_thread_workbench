@@ -27,6 +27,17 @@
         <translation>Create an inch thread (UNC/UNF) on a cylindrical face inside a PartDesign::Body</translation>
     </message>
 </context>
+<context>
+    <name>ThreadBspCreate</name>
+    <message>
+        <source>Create BSP thread</source>
+        <translation>Create BSP thread</translation>
+    </message>
+    <message>
+        <source>Create a BSP thread (Whitworth 55°, BS 21 / ISO 228-1) on a cylindrical face inside a PartDesign::Body</source>
+        <translation>Create a BSP thread (Whitworth 55°, BS 21 / ISO 228-1) on a cylindrical face inside a PartDesign::Body</translation>
+    </message>
+</context>
 
 <!-- ══════════════════════════════════════════════════════════════ -->
 <!-- Everything else — context ThreadWorkbench                     -->
@@ -42,6 +53,10 @@
     <message>
         <source>Create metric (ISO 724) and inch (UNC/UNF) threads in PartDesign</source>
         <translation>Create metric (ISO 724) and inch (UNC/UNF) threads in PartDesign</translation>
+    </message>
+    <message>
+        <source>Create metric (ISO 724), inch (UNC/UNF) and BSP (Whitworth 55°) threads in PartDesign</source>
+        <translation>Create metric (ISO 724), inch (UNC/UNF) and BSP (Whitworth 55°) threads in PartDesign</translation>
     </message>
 
     <!-- UI: parameter group -->

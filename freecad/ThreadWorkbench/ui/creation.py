@@ -39,11 +39,27 @@ class CreationMixin:
                 translate("err_no_document", "No active document!"))
             return
 
+        # Save the user's edge choice BEFORE scan_selection() clears the
+        # combo box (it calls _update_edge_combo which resets index to 0).
+        w = self._widgets
+        saved_edge_idx = w["cb_start_edge"].currentData()
+
         # Remove preview and uncheck the box before creating the real thread
         self._preview.remove()
         self._widgets["chk_preview"].setChecked(False)
 
         self.scan_selection()
+
+        # Restore the user's edge choice after scan_selection rebuilt the
+        # combo. If the saved index is no longer in the list (edge of a
+        # different face), the combo will stay at its default (index 0).
+        cb = w["cb_start_edge"]
+        if saved_edge_idx is not None and cb.count() > 0:
+            for i in range(cb.count()):
+                if cb.itemData(i) == saved_edge_idx:
+                    cb.setCurrentIndex(i)
+                    break
+
         if not self._analysis.ok:
             QtWidgets.QMessageBox.warning(
                 self.form,

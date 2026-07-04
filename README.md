@@ -3,7 +3,7 @@
 <!-- RU -->
 ## 🇷🇺 Описание
 
-**Thread Workbench** — это верстак для FreeCAD, предназначенный для удобной генерации метрических и дюймовых резьб
+**Thread Workbench** — это верстак для FreeCAD, предназначенный для удобной генерации метрических, дюймовых и BSP (Витворт 55°) резьб
 
 Версия: **0.2.0**
 
@@ -11,12 +11,12 @@
 Этот верстак автоматизирует процесс: достаточно выбрать цилиндрическую грань, задать параметры резьбы — и геометрия будет построена корректно и параметрически.
 
 ### Что позволяет
-- **Автоматический подбор параметров** — выбор диаметра и шага из стандартных рядов (метрические M, дюймовые UNC/UNF и др.).
+- **Автоматический подбор параметров** — выбор диаметра и шага из стандартных рядов (метрические M, дюймовые UNC/UNF, BSP G и др.).
 - **Внешняя и внутренняя резьба** — создание наружной и внутренней резьбы
 - **Смещение от кромки** — возможность задать отступ начала резьбы от края грани, в том числе указать отрицательное значение для фаски.
 - **Левая резьба и реверс** — поддержка левосторонней резьбы и инверсии направления наращивания.
 - **Плавный выход** — опция добавления аддитивного вращения в дальнем конце резьбы для плавного замыкания витков
-- **Профили резьбы** — поддержка различных профилей (ISO 68/1 и других через реестр профилей).
+- **Профили резьбы** — поддержка различных профилей (ISO 68-1, ASME B1.1, BSP/Whitworth 55° и других через реестр профилей).
 - **Предпросмотр** — live-preview перед финальным созданием операции.
 - **Мультиязычность** — интерфейс переводится через стандартную систему переводов.
 
@@ -46,7 +46,7 @@ GPL-3.0-or-later (см. файл [LICENSE](LICENSE)).
 <!-- EN -->
 ## 🇬🇧 Description
 
-**Thread Workbench** is a FreeCAD workbench for convenient generation of metric and inch threads.
+**Thread Workbench** is a FreeCAD workbench for convenient generation of metric, inch and BSP (Whitworth 55°) threads.
 
 Version: **0.2.0**
 
@@ -54,12 +54,12 @@ Version: **0.2.0**
 This workbench automates the process: just select a cylindrical face, set the thread parameters — and the geometry will be built correctly and parametrically.
 
 ### Features
-- **Automatic parameter selection** — choose diameter and pitch from standard series (metric M, inch UNC/UNF, etc.).
+- **Automatic parameter selection** — choose diameter and pitch from standard series (metric M, inch UNC/UNF, BSP G, etc.).
 - **External & internal threads** — create external and internal threads.
 - **Edge offset** — set a distance from the face edge where the thread starts.
 - **Left-handed & reversed** — support for left-hand threads and reverse build direction.
 - **Smooth runout** — option to add an additive revolution at the far end of the thread for smooth groove closure, Fusion 360 style.
-- **Thread profiles** — support for multiple thread profiles (ISO 68/1 and others via the profile registry).
+- **Thread profiles** — support for multiple thread profiles (ISO 68-1, ASME B1.1, BSP/Whitworth 55° and others via the profile registry).
 - **Live preview** — preview the result before committing the operation.
 - **Multilingual** — UI is translatable via the standard FreeCAD translation system.
 

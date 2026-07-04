@@ -126,9 +126,10 @@ class ThreadTaskPanel(
             w["spin_dia"].valueChanged.connect(self._schedule_preview)
             w["cb_pitch"].currentTextChanged.connect(self._schedule_preview)
             w["spin_pitch"].valueChanged.connect(self._schedule_preview)
-        else:
+        else:  # inch, bsp — TPI-based
             w["spin_dia"].valueChanged.connect(self._schedule_preview)
             w["spin_tpi"].valueChanged.connect(self._schedule_preview)
+            w["spin_tpi"].valueChanged.connect(self._update_pitch_mm_label)
 
         w["spin_len"].valueChanged.connect(self._schedule_preview)
         w["spin_off"].valueChanged.connect(self._schedule_preview)

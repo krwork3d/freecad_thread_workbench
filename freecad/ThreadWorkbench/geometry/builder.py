@@ -18,6 +18,7 @@ from freecad.ThreadWorkbench.threads import PROFILE_REGISTRY
 from .frame import build_local_frame
 from .helix import build_helix
 from .precut import build_pre_cut
+from .thread_frame import resolve_thread_frame
 from . import runout as runout_module
 
 
@@ -51,33 +52,14 @@ def create_thread(
 
     doc = body.Document
 
-    # ── Helix direction ──
-    if len(edges) >= 2:
-        t_start = edges[0][0]
-        t_other = edges[-1][0]
-        natural_dir = axis if t_other > t_start else -axis
-    else:
-        natural_dir = axis
-
-    # Internal thread profile goes outward (r_root > r_surface),
-    # so the helix direction must be inverted relative to external.
-    effective_reversed = is_reversed if is_external else not is_reversed
-    cut_dir = -natural_dir if effective_reversed else natural_dir
+    # ── Resolve thread frame (direction, origin, length) ──
+    frame = resolve_thread_frame(axis, edges, is_reversed, offset, pitch, length)
+    thread_dir = frame['thread_dir']
+    cut_dir = frame['cut_dir']
+    ec_start = frame['ec_start']
+    origin = frame['origin']
+    length = frame['length']
     helix_reversed = (cut_dir.dot(axis) < 0)
-
-    # ── Start point ──
-    ec_start = edges[0][2]                     # already on cylinder axis
-    origin = ec_start + cut_dir * (offset - pitch * 0.5)
-
-    # ── Auto-length «edge-to-edge» ──
-    if not length or length <= 0:
-        if len(edges) >= 2:
-            length = abs(edges[-1][0] - edges[0][0])
-        else:
-            raise RuntimeError(
-                translate("err_not_enough_edges",
-                          "Not enough edges for auto-length. "
-                          "Specify thread length manually."))
 
     # ── Resolve profile ──
     profile_class = PROFILE_REGISTRY.get(profile_id)
@@ -107,15 +89,21 @@ def create_thread(
         target_radius = (nominal_radius - h_work) + clearance
 
     # Compute helix height early (needed for pre-cut extent).
-    # y_back = 15P/16 for all standard threads (ISO 68-1 / ASME B1.1).
-    y_back_est = 15.0 * pitch / 16.0
+    # y_back_est is a conservative upper bound: P for all profiles
+    # (ISO 68-1 crest sits at 15P/16, BSP rounded crest spans full P).
+    # The exact value is refined later from the actual profile points
+    # for tapered runout (see line 147).
+    y_back_est = pitch
     if runout == "tapered":
         main_helix_height = max(length + pitch * 0.5 - y_back_est, pitch * 0.5)
     else:
         main_helix_height = length + pitch * 0.5
 
     # Pre-cut axial length depends on runout mode:
-    #  - "pocket": must reach far_end (offset+length+P from ec_start)
+    #  - "pocket": must reach far_end (offset+length+P from ec_start).
+    #              In edge-to-edge mode, far_end may extend beyond the
+    #              cylinder face (to mate with adjacent features like a
+    #              bolt head), so pre-cut must cover that extended length.
     #  - "tapered": must cover the conical fade zone (+P*0.5)
     #  - others: just the main helix sweep (path + last profile overshoot)
     if runout == "pocket":
@@ -156,8 +144,9 @@ def create_thread(
     doc.recompute()
 
     # ── Main helix height ──
-    # Already pre-computed above (before pre-cut) using y_back_est = 15P/16.
-    # Refine for tapered mode with the actual profile y_back if it differs.
+    # Already pre-computed above (before pre-cut) using a conservative
+    # y_back_est = P.  Refine for tapered mode with the actual profile
+    # y_back if it differs from the estimate.
     if runout == "tapered":
         y_back = max(p.y for p in pts)
         if abs(y_back - y_back_est) > 1e-6:
@@ -181,46 +170,51 @@ def create_thread(
     # The PartDesign helix sweeps a profile of pitch-tall cross-section,
     # so the visible groove on the cylinder extends ONE FULL PITCH past
     # the helix path tip. Anchor the runout's forward edge at this true
-    # groove-tip position, but never past the cylinder's far face —
-    # otherwise the feature would land in empty space and have no effect
-    # (typical for auto-length external threads where the helix path
-    # already runs flush with the face).
+    # groove-tip position.
+    #
+    # For subtractive runouts (tapered, undercut), we clamp to the
+    # cylinder's far face to avoid features in empty space (typical for
+    # auto-length external threads where the helix path already runs
+    # flush with the face).
+    #
+    # For additive runouts (pocket), we allow the fill to extend beyond
+    # the cylinder boundary so it can properly close the groove and mate
+    # with adjacent features (e.g., bolt head). This is essential for
+    # edge-to-edge threads where the thread must transition smoothly
+    # into a non-cylindrical feature.
 
-    # The helix lives on the cylindrical surface, which spans from
-    # ec_start (the user-selected start edge) toward ec_end (the other
-    # circular edge of the same face). That direction is the only one
-    # guaranteed to be "along the actual thread" — unlike `cut_dir`,
-    # whose sign is flipped between external/internal threads and is
-    # then compensated by `helix.Reversed`. We use it directly to anchor
-    # axisymmetric runout features so they always land on the same side
-    # as the helix, regardless of internal sign conventions.
-    ec_start = edges[0][2]
-    ec_end = edges[-1][2]
-    if len(edges) >= 2:
-        delta = ec_end - ec_start
-        if delta.Length > 1e-9:
-            helix_dir = delta.normalize()
-        else:
-            helix_dir = cut_dir
-    else:
-        helix_dir = cut_dir
+    # Runout direction: from start edge to end edge (same as cut_dir)
+    # ec_start already defined above from resolve_thread_frame
+    ec_end = frame['ec_end']
+    helix_dir = cut_dir  # Use the same direction as the helix
     back_dir = -helix_dir
 
     cyl_end_dist = (ec_end - ec_start).dot(helix_dir)
     groove_tip_dist = offset + length + pitch  # along helix_dir from ec_start
 
-    if cyl_end_dist > 0.0:
-        forward_dist = min(groove_tip_dist, cyl_end_dist)
-    else:
+    # For additive runout (pocket), we want the fill to start at the
+    # actual thread end (groove_tip) regardless of cylinder boundary,
+    # so it properly closes the groove and can extend to mate with
+    # adjacent features (e.g., bolt head). For subtractive runouts
+    # (tapered, undercut), we still clamp to the cylinder boundary
+    # to avoid features in empty space.
+    if runout == "pocket":
         forward_dist = groove_tip_dist
+    else:
+        if cyl_end_dist > 0.0:
+            forward_dist = min(groove_tip_dist, cyl_end_dist)
+        else:
+            forward_dist = groove_tip_dist
 
     far_end = ec_start + helix_dir * forward_dist
 
     # Position of the user-specified thread end (for undercut anchor).
     # This is the boundary where the full-profile thread terminates,
     # placed in the same 3D direction the helix actually grows.
+    # For pocket runout, we don't clamp to cylinder boundary to allow
+    # the fill to extend to adjacent features (e.g., bolt head).
     thread_end_dist = offset + length
-    if cyl_end_dist > 0.0:
+    if runout != "pocket" and cyl_end_dist > 0.0:
         thread_end_dist = min(thread_end_dist, cyl_end_dist)
     thread_end = ec_start + helix_dir * thread_end_dist
 

@@ -27,6 +27,17 @@
         <translation>Создать дюймовую резьбу (UNC/UNF) на цилиндрической грани внутри PartDesign::Body</translation>
     </message>
 </context>
+<context>
+    <name>ThreadBspCreate</name>
+    <message>
+        <source>Create BSP thread</source>
+        <translation>Создать BSP резьбу</translation>
+    </message>
+    <message>
+        <source>Create a BSP thread (Whitworth 55°, BS 21 / ISO 228-1) on a cylindrical face inside a PartDesign::Body</source>
+        <translation>Создать BSP резьбу (Витворт 55°, BS 21 / ISO 228-1) на цилиндрической грани внутри PartDesign::Body</translation>
+    </message>
+</context>
 
 <!-- ══════════════════════════════════════════════════════════════ -->
 <!-- Everything else — context ThreadWorkbench                     -->
@@ -42,6 +53,10 @@
     <message>
         <source>Create metric (ISO 724) and inch (UNC/UNF) threads in PartDesign</source>
         <translation>Создание метрических (ISO 724) и дюймовых (UNC/UNF) резьб в PartDesign</translation>
+    </message>
+    <message>
+        <source>Create metric (ISO 724), inch (UNC/UNF) and BSP (Whitworth 55°) threads in PartDesign</source>
+        <translation>Создание метрических (ISO 724), дюймовых (UNC/UNF) и BSP (Витворт 55°) резьб в PartDesign</translation>
     </message>
 
     <!-- UI: parameter group -->

@@ -9,8 +9,12 @@ every :meth:`ThreadPreview.update` call.
 import FreeCADGui as Gui
 from pivy import coin
 
+from freecad.ThreadWorkbench.geometry.thread_frame import resolve_thread_frame
+from freecad.ThreadWorkbench.threads import PROFILE_REGISTRY
+
 from .helix_line import make_helix_line
 from .profile_line import make_profile_line
+from .surface import make_thread_surface
 
 
 class ThreadPreview:
@@ -20,9 +24,14 @@ class ThreadPreview:
     Call :meth:`remove` to hide it.
     """
 
+    # Transparency applied to the host body while preview is visible.
+    _BODY_TRANSPARENCY = 75
+
     def __init__(self):
         self._sep = None  # root SoSeparator we inject into the scene
         self._attached = False
+        self._body = None            # body made translucent during preview
+        self._body_transparency = 0  # saved original transparency
 
     # ── Public API ────────────────────────────────────────────────
 
@@ -35,49 +44,71 @@ class ThreadPreview:
             return
 
         axis = face_analysis.axis
-        cyl_radius = face_analysis.radius
+        stock_radius = face_analysis.radius
         edges = face_analysis.edges
 
         if not edges:
             self.remove()
             return
 
-        # Helix direction
-        if len(edges) >= 2:
-            t_start = edges[0][0]
-            t_other = edges[-1][0]
-            natural_dir = axis if t_other > t_start else -axis
-        else:
-            natural_dir = axis
+        # Resolve thread frame using shared logic (same as builder.create_thread)
+        try:
+            frame = resolve_thread_frame(axis, edges, is_reversed, offset, pitch, length)
+        except RuntimeError:
+            self.remove()
+            return
 
-        effective_reversed = is_reversed if is_external else not is_reversed
-        cut_dir = -natural_dir if effective_reversed else natural_dir
+        cut_dir = frame['cut_dir']
+        origin = frame['origin']
+        length = frame['length']
         helix_reversed = (cut_dir.dot(axis) < 0)
 
-        ec_start = edges[0][2]
-        origin = ec_start + cut_dir * (offset - pitch * 0.5)
-
-        # Auto-length
-        if not length or length <= 0:
-            if len(edges) >= 2:
-                length = abs(edges[-1][0] - edges[0][0])
+        # ── Resolve effective surface radius from nominal diameter ──
+        # Mirrors builder.create_thread pre-cut logic: when stock radius
+        # differs from nominal, the thread actually sits on target_radius.
+        # Using it here makes the preview reflect diameter changes.
+        profile_class = PROFILE_REGISTRY.get(profile_id)
+        cyl_radius = stock_radius
+        if profile_class is not None:
+            profile_tmp = profile_class()
+            h_work = profile_tmp._working_depth(pitch)
+            nominal_radius = diameter / 2.0
+            if is_external:
+                target_radius = nominal_radius - clearance
             else:
-                self.remove()
-                return
+                target_radius = (nominal_radius - h_work) + clearance
+            # Apply pre-cut only when the stock differs from target by
+            # more than the threshold (matches builder.py).
+            if abs(stock_radius - target_radius) > 0.01:
+                cyl_radius = target_radius
 
         # Build the scene
         sep = coin.SoSeparator()
 
-        # Helix line (orange)
+        # ── Shaded swept thread-groove surface (translucent) ──
+        # This is the "solid cut preview" — like FreeCAD's hole preview.
+        if profile_class is not None:
+            profile = profile_tmp
+            profile_pts = profile.build_profile(pitch, cyl_radius, is_external)
+            surface_sep = make_thread_surface(
+                axis, origin, pitch, length, cyl_radius,
+                profile_pts,
+                is_external=is_external,
+                left_handed=left_handed,
+                helix_reversed=helix_reversed,
+            )
+            sep.addChild(surface_sep)
+
+        # ── Helix path line (orange) ──
         helix_sep = make_helix_line(
             axis, origin, pitch, length, cyl_radius,
             left_handed=left_handed, helix_reversed=helix_reversed,
         )
         sep.addChild(helix_sep)
 
-        # Profile cross-section (cyan)
+        # ── Profile cross-section (cyan) ──
         profile_sep = make_profile_line(
-            axis, origin, pitch, cyl_radius, offset,
+            axis, origin, pitch, cyl_radius,
             is_external, profile_id,
         )
         sep.addChild(profile_sep)
@@ -106,11 +137,16 @@ class ThreadPreview:
         axis_sep.addChild(axis_line)
         sep.addChild(axis_sep)
 
+        # Make the host body translucent so the thread groove shows
+        # through it (like FreeCAD's hole preview).
+        self._apply_body_transparency(face_analysis.body)
+
         # Replace or attach
         self._attach(sep)
 
     def remove(self):
         """Remove the preview overlay from the scene."""
+        self._restore_body_transparency()
         self._detach()
 
     # ── Internal ──────────────────────────────────────────────────
@@ -142,3 +178,30 @@ class ThreadPreview:
                 pass
         self._sep = None
         self._attached = False
+
+    # ── Host-body transparency ────────────────────────────────────
+
+    def _apply_body_transparency(self, body):
+        """Make ``body`` semi-transparent while the preview is shown."""
+        if body is None:
+            return
+        # Restore any previously dimmed body first.
+        self._restore_body_transparency()
+        self._body = body
+        try:
+            self._body_transparency = body.ViewObject.Transparency
+            body.ViewObject.Transparency = self._BODY_TRANSPARENCY
+        except Exception:
+            self._body = None
+            self._body_transparency = 0
+
+    def _restore_body_transparency(self):
+        """Restore the original transparency of the host body."""
+        if self._body is None:
+            return
+        try:
+            self._body.ViewObject.Transparency = self._body_transparency
+        except Exception:
+            pass
+        self._body = None
+        self._body_transparency = 0

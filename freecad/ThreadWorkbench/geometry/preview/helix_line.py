@@ -16,10 +16,14 @@ def make_helix_line(axis, origin, pitch, length, radius,
     # Direction along the helix
     cut_dir = -axis if helix_reversed else axis
 
+    # Twist sign: PartDesign::SubtractiveHelix with Reversed=True
+    # flips the winding direction, so mirror the handedness here too.
+    flip = -1.0 if helix_reversed else 1.0
+
     pts = []
     for i in range(n_segments + 1):
         t = length * i / n_segments
-        angle = 2.0 * math.pi * t / pitch
+        angle = flip * 2.0 * math.pi * t / pitch
         if left_handed:
             angle = -angle
         x = radius * math.cos(angle)
