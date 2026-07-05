@@ -3,7 +3,7 @@
 # FreeCAD loads this module at startup in any mode.
 import os
 
-__version__ = "0.2.0"
+__version__ = "0.3.1"
 
 # Absolute path to the addon root directory.
 # This module lives at: <addon_root>/freecad/ThreadWorkbench/__init__.py
